@@ -1,0 +1,7 @@
+   預設閘道 . . . . . . . . . . . . .:
+PS D:\Desktop\GUI> set-variable -name DISPLAY -value 192.168.36.4:0.0
+PS D:\Desktop\GUI> docker run -e DISPLAY=$DISPLAY --gpus all -t -d -i test2
+f470d213feba8c3ca2d8de0d4b899cde25479e654836b0e2f367c46943b7c2d3
+PS D:\Desktop\GUI> docker run -e DISPLAY=$DISPLAY --gpus all -t -d -i test2
+d069cda3bd89bcc8bd6672da05c1f6b9a11b01a0e8989c1ba13c5ccd5475d472
+PS D:\Desktop\GUI>
