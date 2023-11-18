@@ -66,7 +66,7 @@ class ConvNet(nn.Module):
     
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-state_dict = torch.load("../model112.pth")
+state_dict = torch.load("./model112.pth")
 model = ConvNet()
 model.load_state_dict(state_dict)
 model.to(device)

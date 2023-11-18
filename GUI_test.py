@@ -96,7 +96,6 @@ if __name__=="__main__":
         transforms.ToTensor(),
     ])
 
-    current_index = 0   
 
     file_path="./1001.txt"
     print("Loading...")
@@ -108,14 +107,12 @@ if __name__=="__main__":
     start_time=time.time()
     CWT_list = CWT(file_path)
     end_time=time.time()
-    print("Segmention time: ",(end_time-start_time))
+    print("CWT time: ",(end_time-start_time))
     print("Loading...")
     start_time=time.time()
     predict_list = CNN_processing(file_path)
     end_time=time.time()
-    print("Segmention time: ",(end_time-start_time))
-    print("Loading...")
-    current_index = 0
+    print("CNN time: ",(end_time-start_time))
 
 
 
