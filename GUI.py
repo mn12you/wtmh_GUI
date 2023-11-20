@@ -79,8 +79,8 @@ transform = transforms.Compose([
 ])
 
 current_index = 0
-def CNN(path):
-    cwt_images = CWT(path)
+def CNN(cwt_images):
+    
     pred_list=[]
     for i, image in enumerate(cwt_images):
     # 创建Pillow图像对象
@@ -130,11 +130,9 @@ def segment(path):
     
     return  seg_list # 返回包含所有seg的列表
 
-def CWT(path):
+def CWT(seg_list ):
     CWT_list = []
     img_select = []
-
-    seg_list = segment(path)
 
     for i in range(0, len(seg_list) - 1):
         seg = seg_list[i]
@@ -161,9 +159,9 @@ def CWT(path):
 
     return CWT_list
 
-def CNNprocessing (path):
+def CNNprocessing (cwt_images):
 
-    predict_list = CNN(path)
+    predict_list = CNN(cwt_images)
 
     return predict_list
 
@@ -207,8 +205,8 @@ def open_file_dialog():
     file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
     if file_path:
         seg_list = segment(file_path)
-        CWT_list = CWT(file_path)
-        predict_list = CNNprocessing (file_path)
+        CWT_list = CWT(seg_list)
+        predict_list = CNNprocessing (CWT_list)
         current_index = 0
         show_segment_and_cwt()
 
