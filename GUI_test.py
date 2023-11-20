@@ -13,8 +13,7 @@ import torch.nn.functional as F
 from CNN import ConvNet
 import time
 
-def CNN_processing(path):
-    cwt_images = CWT(path)
+def CNN_processing(cwt_images):
     pred_list=[]
     for i, image in enumerate(cwt_images):
     # 創建 PILLOW 
@@ -64,11 +63,10 @@ def segment(path):
     
     return  seg_list # 返回包含所有seg的列表
 
-def CWT(path):
+def CWT(seg_list):
     CWT_list = []
     img_select = []
 
-    seg_list = segment(path)
 
     for i in range(0, len(seg_list) - 1):
         seg = seg_list[i]
@@ -105,12 +103,12 @@ if __name__=="__main__":
     print("Segmention time: ",(end_time-start_time))
     print("Loading...")
     start_time=time.time()
-    CWT_list = CWT(file_path)
+    CWT_list = CWT(seg_list)
     end_time=time.time()
     print("CWT time: ",(end_time-start_time))
     print("Loading...")
     start_time=time.time()
-    predict_list = CNN_processing(file_path)
+    predict_list = CNN_processing(CWT_list)
     end_time=time.time()
     print("CNN time: ",(end_time-start_time))
 
