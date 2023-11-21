@@ -8,15 +8,16 @@ def CWT_112(seg):
     anorm = aa / aa.max()
     DATA = -anorm
     sig = DATA
+    freq=np.linspace(4,40,)
+    img=cupyx.scipy.signal.cwt(sig,)
+    # fmin = 4
+    # fmax = 40
+    # img = np.array(tfa_morlet(sig, s_rate, fmin, fmax, 36/112))
 
-    fmin = 4
-    fmax = 40
-    img = np.array(tfa_morlet(sig, s_rate, fmin, fmax, 36/112))
+    # # 確保心電圖至少包含112個資料點
+    # img_select = np.linspace(0, 175, 112, dtype=int)
 
-    # 確保心電圖至少包含112個資料點
-    img_select = np.linspace(0, 175, 112, dtype=int)
-
-    img = img[::-1, img_select]
-    img = img / np.max(img)
-    CWT_picture = img
+    # img = img[::-1, img_select]
+    # img = img / np.max(img)
+    # CWT_picture = img
     return img
