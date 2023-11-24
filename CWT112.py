@@ -14,7 +14,7 @@ def CWT_112(seg):
     img = np.array(tfa_morlet(sig, s_rate, fmin, fmax, 36/112))
 
     # 確保心電圖至少包含112個資料點
-    img_select = np.linspace(0, 175, 112, dtype=int)
+    img_select = np.linspace(0, 181, 112, dtype=int)
 
     img = img[::-1, img_select]
     img = img / np.max(img)
