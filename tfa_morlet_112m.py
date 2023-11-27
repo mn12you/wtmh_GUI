@@ -7,6 +7,10 @@ from skimage.transform import resize
 from scipy.signal import convolve2d
 from numba import jit
 from scipy.signal import filtfilt
+import cupy as cp
+from scipy.signal._wavelets import cwt
+from scipy.signal._wavelets import ricker
+from scipy.signal._wavelets import morlet2
 
 
 def conv2(x, y, mode='same'):
@@ -33,6 +37,14 @@ def MorletWavelet(fc):
     MW = A * np.exp(np.multiply(t, (np.multiply(t, v1) + v2) ))
     #MW = A * exp(t. * (t. * v1 + v2))
     return MW
+
+
+def Cupy_cwt(td, fs, fmin, fmax, fstep):
+    widths = cp.arange(fmin, fmax, fstep)
+    cwtmatr  = cwt(td,morlet2,widths)
+    return abs(cp.asnumpy(cwtmatr))
+
+
 
 def tfa_morlet(td, fs, fmin, fmax, fstep):
     TFmap = []

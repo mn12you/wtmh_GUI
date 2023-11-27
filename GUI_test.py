@@ -1,5 +1,6 @@
 import biosppy.signals.ecg as ecg
 import numpy as np
+import cupy as cp
 import matplotlib.pyplot as plt
 from CWT112 import CWT_112
 import tkinter as tk
@@ -17,7 +18,7 @@ def CNN_processing(cwt_images):
     pred_list=[]
     for i, image in enumerate(cwt_images):
     # 創建 PILLOW 
-        image = Image.fromarray((image * 255).astype(np.uint8))
+        image = Image.fromarray((image * 255).astype(cp.uint8))
         input_data = transform(image).unsqueeze(0).to(device)
 
         # 進行推理
@@ -64,16 +65,20 @@ def segment(path):
     return  seg_list # 返回包含所有seg的列表
 
 def CWT(seg_list):
-    CWT_list = []
+    cupy_CWT_list = []
+    tfa_mor_CWT_list = []
     img_select = []
 
 
     for i in range(0, len(seg_list) - 1):
         seg = seg_list[i]
-        CWT_picture=CWT_112(seg)
-        CWT_list.append(CWT_picture)
+        cupy_CWT_picture=CWT_112(seg)
+        # tfa_mor_CWT_picture=CWT_112(seg)
+        cupy_CWT_list.append(cupy_CWT_picture)
+        # tfa_mor_CWT_list.append(tfa_mor_CWT_picture)
 
-    return CWT_list
+    # return tfa_mor_CWT_list
+    return cupy_CWT_list
 
 
 
@@ -103,12 +108,16 @@ if __name__=="__main__":
     print("Segmention time: ",(end_time-start_time))
     print("Loading...")
     start_time=time.time()
-    CWT_list = CWT(seg_list)
+    cupy_CWT_lists = CWT(seg_list)
+    # tfa_mor_CWT_lists = CWT(seg_list)
+    np.savetxt('cwt_ricker_4.txt',cupy_CWT_lists[4])
+    # np.savetxt('tfa_morlet_cwt_4.txt',tfa_mor_CWT_lists[4])
     end_time=time.time()
     print("CWT time: ",(end_time-start_time))
     print("Loading...")
     start_time=time.time()
-    predict_list = CNN_processing(CWT_list)
+    predict_list = CNN_processing(cupy_CWT_lists)
+    # predict_list = CNN_processing(tfa_mor_CWT_lists)
     end_time=time.time()
     print("CNN time: ",(end_time-start_time))
 
