@@ -75,7 +75,9 @@ def CWT(seg_list):
         cupy_CWT_picture=CWT_112(seg)
         # tfa_mor_CWT_picture=CWT_112(seg)
         cupy_CWT_list.append(cupy_CWT_picture)
+        
         # tfa_mor_CWT_list.append(tfa_mor_CWT_picture)
+    print("CWT_done")
 
     # return tfa_mor_CWT_list
     return cupy_CWT_list
@@ -110,7 +112,7 @@ if __name__=="__main__":
     start_time=time.time()
     cupy_CWT_lists = CWT(seg_list)
     # tfa_mor_CWT_lists = CWT(seg_list)
-    np.savetxt('cwt_ricker_4.txt',cupy_CWT_lists[4])
+    # np.savetxt('cwt_ricker_4.txt',cupy_CWT_lists[4])
     # np.savetxt('tfa_morlet_cwt_4.txt',tfa_mor_CWT_lists[4])
     end_time=time.time()
     print("CWT time: ",(end_time-start_time))

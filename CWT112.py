@@ -15,7 +15,7 @@ def CWT_112(seg):
     fmin = 4
     fmax = 40
     
-    cupy_img = cp.array(Cupy_cwt(sig.get(), s_rate, fmin, fmax, 36/112))
+    cupy_img = cp.array(Cupy_cwt(sig, s_rate, fmin, fmax, 36/112))
     # tfa_mor_img = np.array(tfa_morlet(sig, s_rate, fmin, fmax, 36/112))
 
     # 確保心電圖至少包含112個資料點

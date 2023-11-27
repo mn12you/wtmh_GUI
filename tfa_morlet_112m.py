@@ -8,9 +8,9 @@ from scipy.signal import convolve2d
 from numba import jit
 from scipy.signal import filtfilt
 import cupy as cp
-from scipy.signal._wavelets import cwt
-from scipy.signal._wavelets import ricker
-from scipy.signal._wavelets import morlet2
+from cupyx.scipy.signal._wavelets import cwt
+from cupyx.scipy.signal._wavelets import ricker
+from cupyx.scipy.signal._wavelets import morlet2
 
 
 def conv2(x, y, mode='same'):
