@@ -75,9 +75,8 @@ def CWT(seg_list):
         cupy_CWT_picture=CWT_112(seg)
         # tfa_mor_CWT_picture=CWT_112(seg)
         cupy_CWT_list.append(cupy_CWT_picture)
-        
+
         # tfa_mor_CWT_list.append(tfa_mor_CWT_picture)
-    print("CWT_done")
 
     # return tfa_mor_CWT_list
     return cupy_CWT_list

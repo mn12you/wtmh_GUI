@@ -29,6 +29,5 @@ def CWT_112(seg):
 
     cupy_CWT_picture = cupy_img
     # tfa_mor_CWT_picture = tfa_mor_img
-    
     # return tfa_mor_img
     return cupy_img
