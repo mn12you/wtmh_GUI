@@ -47,7 +47,7 @@ def upload_file():
 
         pred_list = CNN_processing(cwt_list)
         pred_list_j=json.dumps(pred_list)
-        print(len(pred_list_j))
+        
         return render_template('result.html', file_path=file_path, pred_list=pred_list_j,seg_list=seg_list_j,cwt_list=cwt_list_j)
 
 if __name__ == '__main__':

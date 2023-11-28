@@ -4,9 +4,6 @@ var current_check = 0;
 var predict_list = JSON.parse(document.getElementById("pred_list").dataset.pred_list);
 var cwt_list = JSON.parse(document.getElementById("cwt_list").dataset.cwt_list);
 var seg_list = JSON.parse(document.getElementById("seg_list").dataset.seg_list);
-console.log(predict_list)
-console.log(cwt_list)
-console.log(seg_list)
 
 // Initialize ECG Chart
 var ecgCtx = document.getElementById('ecgChart').getContext('2d');
