@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix"></script>
+
+    <title>ECG detection Results</title>
+</head>
+<body>
+    <script src="{{ url_for('static', filename='js/function.js') }}"></script>
+    <div id="pred_list" data-pred_list='{{pred_list}}'></div> 
+    <div id="cwt_list" data-cwt_list='{{cwt_list}}'></div>
+    <div id="seg_list" data-seg_list='{{seg_list}}'></div>
+    
+    
+    <h1>File Upload Results</h1>
+    <h2 id="predictionlabel">20</h2>
+    <canvas id="ecgChart" width="400" height="200"></canvas>
+    <canvas id="heatmap" width="112" height="112"></canvas>
+    <input type="button" value="上一張" id="upindexbtn">
+    <input type="button" value="下一張" id="downindexbtn">
+    
+    
+    <script>
+        // Additional JavaScript logic can go here
+    </script>
+</body>
+
+</html>
