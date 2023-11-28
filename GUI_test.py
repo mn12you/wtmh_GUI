@@ -10,58 +10,12 @@ from PIL import Image
 from torchvision.transforms import transforms
 from torch import nn
 import torch.nn.functional as F
-from CNN import ConvNet
+from CNN import CNN_processing
 import time
-
-def CNN_processing(cwt_images):
-    pred_list=[]
-    for i, image in enumerate(cwt_images):
-    # 創建 PILLOW 
-        image = Image.fromarray((image * 255).astype(np.uint8))
-        input_data = transform(image).unsqueeze(0).to(device)
-
-        # 進行推理
-        with torch.no_grad():
-            output = model(input_data)
-            pred = output.argmax(dim=1)
-
-        # 列印結果
-        a=np.array(['F', 'N', 'Q','V'])
-        i=pred.item()
-        pred_list.append(a[i])
-    return pred_list
+from segment import segment
 
 
-def segment(path):
-    # 讀取txt檔案
-    with open(path, 'r') as f:
-        # 讀取所有行，提取第一個數字
-        numbers = []
-        for line in f.readlines():
-            num_list = line.split(',')  #拆分為數字列表
-            first_num = int(num_list[0])  #提取第一個元素
-            numbers.append(first_num)  #添加到數字列表中
 
-    ecg_signal = np.array(numbers)
-
-    # 設定取樣頻率
-    fs = 250
-
-    # 檢測R波峰值
-    rpeaks, = ecg.hamilton_segmenter(ecg_signal, sampling_rate=fs)
-    rpeaks, = ecg.correct_rpeaks(ecg_signal, rpeaks, sampling_rate=fs, tol=0.05)
-
-    seg_list = []  # 創建一個空的列表
-
-    for i in range(len(rpeaks)):
-        seg_start = rpeaks[i] - 90  # 設定每個R波峰值附近的心電圖訊號段的起點
-        seg_end = rpeaks[i] + 90  # 設定每個R波峰值附近的心電圖訊號段的終點
-        seg = ecg_signal[seg_start:seg_end]  # 切割心電圖訊號
-        if len(seg) == 181:
-            seg = np.delete(seg, -1)  # 將多餘的一個數字刪除
-        seg_list.append(seg)  # 添加seg到列表中
-    
-    return  seg_list # 返回包含所有seg的列表
 
 def CWT(seg_list):
     CWT_list = []
@@ -78,22 +32,6 @@ def CWT(seg_list):
 
 
 if __name__=="__main__":
-    
-    #讀取 model 放入 GPU 中
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    state_dict = torch.load("./model112.pth")
-    model = ConvNet()
-    model.load_state_dict(state_dict)
-    model.to(device)
-    model.eval()
-
-    #放入模型前處理 (變換大小、灰階、torch tensor)
-    transform = transforms.Compose([
-        transforms.Resize(112),
-        transforms.Grayscale(),
-        transforms.ToTensor(),
-    ])
-
 
     file_path="./1001.txt"
     print("Loading...")
