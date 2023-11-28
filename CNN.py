@@ -3,6 +3,8 @@ import torch
 from torchvision.transforms import transforms
 from torch import nn
 import torch.nn.functional as F
+from PIL import Image
+import numpy as np
 
 class ConvNet(nn.Module):
     def __init__(self):
@@ -55,4 +57,35 @@ class ConvNet(nn.Module):
         x = F.softmax(self.fc2(x))
 
         return x
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+state_dict = torch.load("model112.pth")
+model = ConvNet()
+model.load_state_dict(state_dict)
+model.to(device)
+model.eval()
+
+transform = transforms.Compose([
+    transforms.Resize(112),
+    transforms.Grayscale(),
+    transforms.ToTensor(),
+])
+
+        
+    def CNN_processing(cwt_images):
+        pred_list=[]
+        for i, image in enumerate(cwt_images):
+        # 創建 PILLOW 
+            image = Image.fromarray((image * 255).astype(np.uint8))
+            input_data = transform(image).unsqueeze(0).to(device)
+    
+            # 進行推理
+            with torch.no_grad():
+                output = model(input_data)
+                pred = output.argmax(dim=1)
+    
+            # 列印結果
+            a=np.array(['F', 'N', 'Q','V'])
+            i=pred.item()
+            pred_list.append(a[i])
+        return pred_list
     
