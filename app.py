@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import os
 from segment import segment
-from CNN import CNN
+from CNN import CNN_processing
 from CWT112 import CWT_112
 import json
 import numpy as np
@@ -45,9 +45,9 @@ def upload_file():
         cwt_list_list = cwt_list_np.tolist()
         cwt_list_j = json.dumps(cwt_list_list)
 
-        pred_list = CNN(cwt_list)
+        pred_list = CNN_processing(cwt_list)
         pred_list_j=json.dumps(pred_list)
-
+        print(len(pred_list_j))
         return render_template('result.html', file_path=file_path, pred_list=pred_list_j,seg_list=seg_list_j,cwt_list=cwt_list_j)
 
 if __name__ == '__main__':
