@@ -1,11 +1,8 @@
 import numpy as np
 import math
 import time
-import matplotlib.pyplot as plt
 import scipy.signal
-from skimage.transform import resize
 from scipy.signal import convolve2d
-from numba import jit
 from scipy.signal import filtfilt
 
 

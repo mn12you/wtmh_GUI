@@ -1,15 +1,5 @@
-import biosppy.signals.ecg as ecg
 import numpy as np
-import matplotlib.pyplot as plt
 from CWT112 import CWT_112
-import tkinter as tk
-from tkinter import ttk, filedialog
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import torch
-from PIL import Image
-from torchvision.transforms import transforms
-from torch import nn
-import torch.nn.functional as F
 from CNN import CNN_processing
 import time
 from segment import segment
