@@ -1,6 +1,7 @@
 import numpy as np
-from CWT112 import CWT_112
-from CNN import CNN_processing
+# from CWT112 import CWT_112
+# from CNN import CNN_processing
+from CWT_CNN import CNN_processing
 import time
 from segment import segment
 
@@ -31,12 +32,12 @@ if __name__=="__main__":
     print("Segmention time: ",(end_time-start_time))
     print("Loading...")
     start_time=time.time()
-    CWT_list = CWT(seg_list)
-    end_time=time.time()
-    print("CWT time: ",(end_time-start_time))
-    print("Loading...")
-    start_time=time.time()
-    predict_list = CNN_processing(CWT_list)
+    # CWT_list = CWT(seg_list)
+    # end_time=time.time()
+    # print("CWT time: ",(end_time-start_time))
+    # print("Loading...")
+    # start_time=time.time()
+    predict_list = CNN_processing(seg_list)
     end_time=time.time()
     print("CNN time: ",(end_time-start_time))
 
