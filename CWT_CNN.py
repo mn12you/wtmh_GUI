@@ -98,8 +98,8 @@ class ConvNet(nn.Module):
         results = torch.stack(results)     # [n_scales,n_batch,2,t]
         cwt = results.permute(1,0,2,3) # [n_batch,n_scales,2,t]
         cwt = (cwt[:,:,0,:] + cwt[:,:,1,:]*1j)
-        cwt = cwt[0,0:112, img_select]
-        cwt=cwt.resize_(1, 1,112,112)
+        cwt = cwt[0:cwt.size(dim=0),0:112, img_select]
+        cwt=cwt.resize_(cwt.size(dim=0), 1,112,112)
         cwt=cwt.type(torch.FloatTensor).cuda()
         x = F.relu(self.conv1(cwt))
         x = self.dropout1(x)
@@ -140,6 +140,7 @@ transform = transforms.Compose([
 def CNN_processing(seg_list):
     pred_list=[]
     for i, seg in enumerate(seg_list):
+
         # 創建 PILLOW 
         # image = Image.fromarray((image * 255).astype(np.uint8))
         # input_data = transform(image).unsqueeze(0).to(device)
