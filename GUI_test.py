@@ -1,7 +1,8 @@
 import numpy as np
 # from CWT112 import CWT_112
 # from CNN import CNN_processing
-from CWT_CNN import CNN_processing
+# from CWT_CNN import CNN_processing
+from RT_CNN import CNN_processing
 import time
 from segment import segment
 
