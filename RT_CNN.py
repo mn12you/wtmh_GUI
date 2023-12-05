@@ -17,10 +17,12 @@ def TRT_infer(input_image):
         size = trt.volume(context.get_binding_shape(binding_idx))
         dtype = trt.nptype(engine.get_binding_dtype(binding))
         if engine.binding_is_input(binding):
+            print("A")
             input_buffer = np.ascontiguousarray(input_image)
             input_memory = cuda.mem_alloc(input_image.nbytes)
             bindings.append(int(input_memory))
         else:
+            print("B")
             output_buffer = cuda.pagelocked_empty(size, dtype)
             output_memory = cuda.mem_alloc(output_buffer.nbytes)
             bindings.append(int(output_memory))
