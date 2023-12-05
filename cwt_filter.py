@@ -3,13 +3,14 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 import scipy.signal
 import scipy.optimize
-from wavelets import Morlet
 import torch
 from torch.autograd import Variable
-wavelet=Morlet()
+
 
 def filter_build(dt,unbias=False):
-    scales=wavelet.scale_from_period(np.reciprocal(np.arange(40,4,-36/112)))
+    w=6
+    coeff = np.sqrt(w* w + 2)
+    scales=(np.reciprocal(np.arange(40,4,-36/112))*(coeff+w))/(4.*np.pi)
     filters = [None]*len(scales)
     for scale_idx, scale in enumerate(scales):
         # Number of points needed to capture wavelet
@@ -19,7 +20,12 @@ def filter_build(dt,unbias=False):
         if len(t) % 2 == 0: t = t[0:-1]  # requires odd filter size
         # Sample wavelet and normalise
         norm = (dt / scale) ** .5
-        filters[scale_idx] = norm * wavelet(t, scale)
+
+        x = t / scale
+        wavelet = np.exp(1j * w * x)
+        wavelet -= np.exp(-0.5 * (w ** 2))
+        wavelet *= np.exp(-0.5 * (x ** 2)) * np.pi ** (-0.25)
+        filters[scale_idx] = norm * wavelet
     
     return filters
 

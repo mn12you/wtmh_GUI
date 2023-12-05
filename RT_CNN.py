@@ -21,7 +21,6 @@ def TRT_infer(input_image):
             input_memory = cuda.mem_alloc(input_image.nbytes)
             bindings.append(int(input_memory))
         else:
-            print("B")
             output_buffer = cuda.pagelocked_empty(size, dtype)
             output_memory = cuda.mem_alloc(output_buffer.nbytes)
             bindings.append(int(output_memory))
@@ -39,7 +38,6 @@ def TRT_infer(input_image):
 def CNN_processing(seg_list):
     pred_list=[]
     for i, seg in enumerate(seg_list):
-
         # 創建 PILLOW 
         # image = Image.fromarray((image * 255).astype(np.uint8))
         # input_data = transform(image).unsqueeze(0).to(device)
@@ -53,11 +51,11 @@ def CNN_processing(seg_list):
             # seg=seg.cuda()
             output = TRT_infer(seg)
             print(output)
-            pred = output.argmax(dim=1)
+            # pred = output.argmax()
 
         # 列印結果
-        a=np.array(['F', 'N', 'Q','V'])
-        i=pred.item()
-        pred_list.append(a[i])
+        # a=np.array(['F', 'N', 'Q','V'])
+        # i=pred.item()
+        # pred_list.append(a[i])
     return pred_list
 

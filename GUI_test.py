@@ -2,6 +2,7 @@ import numpy as np
 # from CWT112 import CWT_112
 # from CNN import CNN_processing
 # from CWT_CNN import CNN_processing
+# from static_CNN import CNN_processing
 from RT_CNN import CNN_processing
 import time
 from segment import segment
@@ -25,14 +26,15 @@ def CWT(seg_list):
 
 if __name__=="__main__":
 
-    file_path="./1001.txt"
+    # file_path="./1001.txt"
+    # print("Loading...")
+    # start_time=time.time()
+    # seg_list = segment(file_path)
+    # end_time=time.time()
+    # print("Segmention time: ",(end_time-start_time))
     print("Loading...")
     start_time=time.time()
-    seg_list = segment(file_path)
-    end_time=time.time()
-    print("Segmention time: ",(end_time-start_time))
-    print("Loading...")
-    start_time=time.time()
+    seg_list=[np.random.rand(368,)]
     # CWT_list = CWT(seg_list)
     # end_time=time.time()
     # print("CWT time: ",(end_time-start_time))

@@ -3,19 +3,35 @@ import torch
 from torchvision.transforms import transforms
 from torch import nn
 import torch.nn.functional as F
-from PIL import Image
 import numpy as np
-from cwt_filter import filter_build
-Morlet_filter=filter_build(0.004)
-img_select = np.linspace(0, 179, 112, dtype=int)
+
 
 class ConvNet(nn.Module):
-    def __init__(self,filters):
+    def __init__(self):
         super(ConvNet, self).__init__()
-        
+        dt=0.004
+        w=6
+        coeff = np.sqrt(w* w + 2)
+        scales=(np.reciprocal(np.arange(40,4,-36/112))*(coeff+w))/(4.*np.pi)
+        filters = [None]*len(scales)
+        for scale_idx, scale in enumerate(scales):
+            # Number of points needed to capture wavelet
+            M = 10 * scale / dt
+            # Times to use, centred at zero
+            t = np.arange((-M + 1) / 2., (M + 1) / 2.) * dt
+            if len(t) % 2 == 0: t = t[0:-1]  # requires odd filter size
+            # Sample wavelet and normalise
+            norm = (dt / scale) ** .5
+
+            x = t / scale
+            wavelet = np.exp(1j * w * x)
+            wavelet -= np.exp(-0.5 * (w ** 2))
+            wavelet *= np.exp(-0.5 * (x ** 2)) * np.pi ** (-0.25)
+            filters[scale_idx] = norm * wavelet
+            
         self._cuda = True
         self.set_filters(filters)
-        
+        self.img_select = np.linspace(0, 367, 112, dtype=int)
         
         
 
@@ -61,8 +77,9 @@ class ConvNet(nn.Module):
             assert filt.dtype in (np.float32, np.float64, np.complex64, np.complex128)
 
             if np.iscomplex(filt).any():
+                
                 chn_out = 2
-                filt_weights = np.asarray([np.real(filt), np.imag(filt)], np.float32)
+                filt_weights = np.asarray([np.real(filt),np.imag(filt)], np.float32)
             else:
                 chn_out = 1
                 filt_weights = filt.astype(np.float32)[None,:]
@@ -70,9 +87,16 @@ class ConvNet(nn.Module):
             filt_weights = np.expand_dims(filt_weights, 1)  # append chn_in dimension
             filt_size = filt_weights.shape[-1]              # filter length
             padding = self._get_padding(padding_type, filt_size)
-
+            # print(ind,":")
             conv = nn.Conv1d(1, chn_out, kernel_size=filt_size, padding=padding, bias=False)
             conv.weight.data = torch.from_numpy(filt_weights)
+            # print(chn_out," ", filt_size," ",padding )
+            # print(filt_weights)
+            with open('my.txt', 'a') as file:
+                print("self.conv"+str(ind+5),"= nn.Conv1d(1,",chn_out,",kernel_size=",filt_size,", padding=",padding,", bias=False)",file=file)
+                print("self.conv"+str(ind+5),".weight.data = torch.from_numpy(np.array(",filt_weights.tolist(),")).type(torch.cuda.FloatTensor)",file=file)
+                print("self.conv"+str(ind+5),".weight.requires_grad_(False)",file=file)
+         
             conv.weight.requires_grad_(False)
 
             if self._cuda: conv.cuda()
@@ -94,12 +118,16 @@ class ConvNet(nn.Module):
             return None
         results = [None]*len(self._filters)
         for ind, conv in enumerate(self._filters):
+            with open('my.txt', 'a') as file:
+                print("results[",ind,"]=self.conv"+str(ind+5),"(x)",file=file)
             results[ind] = conv(x)
         results = torch.stack(results)     # [n_scales,n_batch,2,t]
         cwt = results.permute(1,0,2,3) # [n_batch,n_scales,2,t]
         cwt = (cwt[:,:,0,:] + cwt[:,:,1,:]*1j)
-        cwt = cwt[0:cwt.size(dim=0),0:112, img_select]
+        cwt = cwt[0:cwt.size(dim=0),0:112,self.img_select]
         cwt=cwt.resize_(cwt.size(dim=0), 1,112,112)
+        cwt2=cwt.cpu()
+        np.save('cwt2.npy',cwt2)
         cwt=cwt.type(torch.FloatTensor).cuda()
         x = F.relu(self.conv1(cwt))
         x = self.dropout1(x)
@@ -127,16 +155,12 @@ class ConvNet(nn.Module):
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 state_dict = torch.load("./model112.pth")
-model = ConvNet(Morlet_filter)
+model = ConvNet()
 model.load_state_dict(state_dict)
 model.to(device)
 model.eval()
 
-transform = transforms.Compose([
-    transforms.Resize(112),
-    transforms.Grayscale(),
-    transforms.ToTensor(),
-])
+
 def CNN_processing(seg_list):
     pred_list=[]
     for i, seg in enumerate(seg_list):
