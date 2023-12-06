@@ -94,7 +94,7 @@ class ConvNet(nn.Module):
             # print(filt_weights)
             with open('my.txt', 'a') as file:
                 print("self.conv"+str(ind+5),"= nn.Conv1d(1,",chn_out,",kernel_size=",filt_size,", padding=",padding,", bias=False)",file=file)
-                print("self.conv"+str(ind+5),".weight.data = torch.from_numpy(np.array(",filt_weights.tolist(),")).type(torch.cuda.FloatTensor)",file=file)
+                print("self.conv"+str(ind+5),".weight.data = torch.tensor(",filt_weights.tolist(),").type(torch.cuda.FloatTensor)",file=file)
                 print("self.conv"+str(ind+5),".weight.requires_grad_(False)",file=file)
          
             conv.weight.requires_grad_(False)

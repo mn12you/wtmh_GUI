@@ -1,9 +1,10 @@
 import numpy as np
-# from CWT112 import CWT_112
-# from CNN import CNN_processing
-# from CWT_CNN import CNN_processing
-# from static_CNN import CNN_processing
-from RT_CNN import CNN_processing
+from CWT112 import CWT_112
+from CNN import CNN_processing 
+# from CWT_CNN import CNN_processing as CNN_processing1
+from onnx_CNN import CNN_processing as CNN_processing1
+from static_CNN import CNN_processing as CNN_processing2
+from RT_CNN import CNN_processing as CNN_processing3
 import time
 from segment import segment
 
@@ -26,23 +27,43 @@ def CWT(seg_list):
 
 if __name__=="__main__":
 
-    # file_path="./1001.txt"
-    # print("Loading...")
+    file_path="./1001.txt"
+    print("Loading...")
+    seg_list=[]
+    for i in range(15000):
+        seg_list.append(np.random.rand(368,).astype(np.float32))
+    start_time=time.time()
+    CWT_list = CWT(seg_list)
+    CNN_processing(CWT_list)
+    end_time=time.time()
+    print("Original time: ",(end_time-start_time))
     # start_time=time.time()
     # seg_list = segment(file_path)
     # end_time=time.time()
     # print("Segmention time: ",(end_time-start_time))
-    print("Loading...")
-    start_time=time.time()
-    seg_list=[np.random.rand(368,)]
+    # print("Loading...")
+    # start_time=time.time()
+    # seg_list=[np.random.rand(368,).astype(np.float32)]
     # CWT_list = CWT(seg_list)
     # end_time=time.time()
     # print("CWT time: ",(end_time-start_time))
     # print("Loading...")
     # start_time=time.time()
-    predict_list = CNN_processing(seg_list)
+    # predict_list = CNN_processing(seg_list)
+    start_time=time.time()
+    start_time=time.time()
+    CNN_processing1(seg_list)
     end_time=time.time()
-    print("CNN time: ",(end_time-start_time))
+    print("onnx time: ",(end_time-start_time))
+    start_time=time.time()
+    CNN_processing2(seg_list)
+    end_time=time.time()
+    print("pytorch time: ",(end_time-start_time))
+    start_time=time.time()
+    CNN_processing3(seg_list)
+    end_time=time.time()
+    print("TRT time: ",(end_time-start_time))
+    # print("CNN time: ",(end_time-start_time))
 
 
 
