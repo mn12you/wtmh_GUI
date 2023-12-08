@@ -1,42 +1,39 @@
 import numpy as np
 from CWT112 import CWT_112
-from CNN import CNN_processing 
-# from CWT_CNN import CNN_processing as CNN_processing1
-from onnx_CNN import CNN_processing as CNN_processing1
+from CNN import CNN_processing as CNN_processing1
+# from CWT_CNN import CNN_processing as CNN_processing2
+from onnx_CNN import CNN_processing as CNN_processing3
 from static_CNN import CNN_processing as CNN_processing2
-from RT_CNN import CNN_processing as CNN_processing3
+# from RT_CNN import CNN_processing as CNN_processing3
+from trt_CNN import CNN_processing as CNN_processing4
 import time
-from segment import segment
+# from segment import segment
+from segment_from_txt import segment 
 
 
 
-
-def CWT(seg_list):
-    CWT_list = []
-    img_select = []
-
-
-    for i in range(0, len(seg_list) - 1):
-        seg = seg_list[i]
-        CWT_picture=CWT_112(seg)
-        CWT_list.append(CWT_picture)
-
-    return CWT_list
 
 
 
 if __name__=="__main__":
 
-    file_path="./1001.txt"
-    print("Loading...")
+    # file_path="./1001.txt"
+    # start_time=time.time()
+    # seg_list=segment(file_path)
+    # end_time=time.time()
+    # print("Segment time:",(end_time-start_time))
+    # print(len(seg_list))
+    number=20000
+    print("Random input:",number," array as input:")
     seg_list=[]
-    for i in range(15000):
+    for i in range(number):
         seg_list.append(np.random.rand(368,).astype(np.float32))
     start_time=time.time()
-    CWT_list = CWT(seg_list)
-    CNN_processing(CWT_list)
+    CWT_list = CWT_112(seg_list)
+    pred_list1=CNN_processing1(CWT_list)
     end_time=time.time()
     print("Original time: ",(end_time-start_time))
+    # print("Original output first one:"pred_list1)
     # start_time=time.time()
     # seg_list = segment(file_path)
     # end_time=time.time()
@@ -47,22 +44,21 @@ if __name__=="__main__":
     # CWT_list = CWT(seg_list)
     # end_time=time.time()
     # print("CWT time: ",(end_time-start_time))
-    # print("Loading...")
-    # start_time=time.time()
-    # predict_list = CNN_processing(seg_list)
+    print("Loading...")
     start_time=time.time()
-    start_time=time.time()
-    CNN_processing1(seg_list)
+    predict_list = CNN_processing2(seg_list)
     end_time=time.time()
-    print("onnx time: ",(end_time-start_time))
+    print("Concat CNN_CWT model (pytorch backend) time: ",(end_time-start_time))
+    print("Loading...")
     start_time=time.time()
-    CNN_processing2(seg_list)
+    predict_list = CNN_processing3(seg_list)
     end_time=time.time()
-    print("pytorch time: ",(end_time-start_time))
+    print("onnx_model (pytorch backend) time: ",(end_time-start_time))
+    print("Loading...")
     start_time=time.time()
-    CNN_processing3(seg_list)
+    pred_list=CNN_processing4(seg_list)
     end_time=time.time()
-    print("TRT time: ",(end_time-start_time))
+    print("TensorRT with Triton server time: ",(end_time-start_time))
     # print("CNN time: ",(end_time-start_time))
 
 
